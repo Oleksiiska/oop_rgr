@@ -32,17 +32,16 @@ public class GroupClass {
         this.participants = new ArrayList<>();
     }
 
-    public boolean addParticipant(Client client) {
+    public void addParticipant(Client client) throws ClassIsFullException {
         if (participants.size() >= maxCapacity) {
-            System.out.println("Запис не вдався: група заповнена");
-            return false;
+            throw new BookingException("Запис неможливий: група '" + this.name + "' заповнена.");
         }
+
         if (participants.contains(client)) {
-            System.out.println("Запис не вдався: клієнт вже записаний на це заняття");
-            return false;
+            return;
         }
+
         participants.add(client);
-        return true;
     }
 
     public void removeParticipant(Client client) {

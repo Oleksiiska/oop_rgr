@@ -7,9 +7,22 @@ public class Membership {
     private final String clubId; // null, when NETWORK_WIDE
 
     public Membership(MembershipType type, LocalDate startDate, int durationInDays, String clubId) {
-        if (type == MembershipType.SINGLE_CLUB && clubId == null) {
-            throw new IllegalArgumentException("Club ID must be provided for a single club membership.");
+        if (type == null) {
+            throw new IllegalArgumentException("Тип абонемента не може бути null.");
         }
+
+        if (startDate == null) {
+            throw new IllegalArgumentException("Дата початку не може бути null.");
+        }
+
+        if (durationInDays <= 0) {
+            throw new IllegalArgumentException("Тривалість абонемента має бути позитивною.");
+        }
+
+        if (type == MembershipType.SINGLE_CLUB && (clubId == null || clubId.isBlank())) {
+            throw new IllegalArgumentException("Club ID має бути вказаний для типу абонемента SINGLE_CLUB.");
+        }
+
         this.type = type;
         this.startDate = startDate;
         this.endDate = startDate.plusDays(durationInDays);

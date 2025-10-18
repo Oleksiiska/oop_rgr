@@ -23,11 +23,11 @@ public class Inventory {
             throw new IllegalArgumentException("Клькість завжди додатня.");
         }
         int currentStock = getStockLevel(product);
-        /*if (currentStock < quantity) {
+        if (currentStock < quantity) {
             throw new ProductOutOfStockException(
                     "Недостатньо товару '" + product.getName() + "' на складі. В наявності: " + currentStock + ", запитано: " + quantity
             );
-        }*/
+        }
         stock.put(product, currentStock - quantity);
     }
 
