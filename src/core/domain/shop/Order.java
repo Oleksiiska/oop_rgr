@@ -1,6 +1,7 @@
-package src.core.domain.shop;
+package core.domain.shop;
 
-import src.core.domain.client.Client;
+import core.domain.client.Client;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -10,7 +11,7 @@ public class Order {
     private final Client client;
     private final List<OrderItem> items;
     private final LocalDateTime orderDate;
-    private double totalPrice;
+    private final double totalPrice;
 
     public Order(Client client, List<OrderItem> items) {
         this.id = UUID.randomUUID().toString();

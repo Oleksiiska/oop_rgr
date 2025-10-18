@@ -1,7 +1,7 @@
-package src.core.domain.shop;
+package core.domain.shop;
 
 public class Supplement extends Product {
-    private String flavor;
+    private final String flavor;
 
     public Supplement(String name, double price, String flavor) {
         super(name, price);

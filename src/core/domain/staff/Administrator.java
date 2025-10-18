@@ -1,4 +1,4 @@
-package src.core.domain.staff;
+package core.domain.staff;
 
 public class Administrator extends Employee {
     public Administrator(String fullName, double salary) {

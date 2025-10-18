@@ -1,12 +1,15 @@
+package core.domain.club;
+
+import core.domain.scheduling.Schedule;
+import core.domain.shop.Inventory;
+import core.domain.staff.Employee;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import src.core.domain.staff.Employee;
-import src.core.domain.club.Studio;
-import src.core.domain.scheduling.Schedule;
-import src.core.domain.shop.Inventory;
+import java.util.UUID;
 
 public class FitnessClub {
+    private final String id;
     private final String address;
     private final Schedule schedule;
     private final Inventory inventory;
@@ -14,10 +17,12 @@ public class FitnessClub {
     private final List<Studio> studios;
 
     public FitnessClub(String address) {
+        this.id = UUID.randomUUID().toString();
         this.address = address;
         this.schedule = new Schedule();
         this.inventory = new Inventory();
         this.staff = new ArrayList<>();
+        this.studios = new ArrayList<>();
     }
 
     public void addStaff(Employee employee) {
@@ -26,6 +31,10 @@ public class FitnessClub {
 
     public void addStudio(Studio studio) {
         this.studios.add(studio);
+    }
+
+    public String getId() {
+        return id;
     }
 
     public String getAddress() {
@@ -46,4 +55,5 @@ public class FitnessClub {
 
     public List<Studio> getStudios() {
         return List.copyOf(studios);
+    }
 }

@@ -1,18 +1,13 @@
-import java.util.ArrayList;
-import java.util.List;
+package core.domain.client;
 
 public class Client {
-    private String fullName;
+    private final String fullName;
+    private Membership membership; // can be null
     private String phoneNumber;
-    private Membership membership; // Может быть null
-    private final List<GroupClass> bookingHistory;
-    private final List<Order> orderHistory;
 
     public Client(String fullName, String phoneNumber) {
         this.fullName = fullName;
         this.phoneNumber = phoneNumber;
-        this.bookingHistory = new ArrayList<>();
-        this.orderHistory = new ArrayList<>();
     }
 
     public void assignMembership(Membership membership) {
@@ -23,8 +18,11 @@ public class Client {
         return membership != null && membership.isActive();
     }
 
-    public String getId() {
-        return id;
+    public void setPhoneNumber(String phoneNumber) {
+        if (phoneNumber == null || phoneNumber.isBlank()) {
+            throw new IllegalArgumentException("Номер телефону не може бути порожнім.");
+        }
+        this.phoneNumber = phoneNumber;
     }
 
     public String getFullName() {
@@ -34,4 +32,6 @@ public class Client {
     public Membership getMembership() {
         return membership;
     }
+
+    public String getPhoneNumber() {return phoneNumber;}
 }

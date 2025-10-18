@@ -1,4 +1,4 @@
-package com.your_nickname.fitnessnetwork.core.domain.exceptions;
+package core.exceptions;
 
 public class BookingException extends FitnessClubException {
     public BookingException(String message) {

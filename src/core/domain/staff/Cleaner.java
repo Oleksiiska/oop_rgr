@@ -1,10 +1,10 @@
-package src.core.domain.staff;
+package core.domain.staff;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Cleaner extends Employee {
-    private List<String> assignedZones;
+    private final List<String> assignedZones;
 
     public Cleaner(String fullName, double salary, List<String> assignedZones) {
         super(fullName, salary);

@@ -1,4 +1,4 @@
-package src.core.domain.shop;
+package core.domain.shop;
 
 import java.util.UUID;
 

@@ -1,3 +1,5 @@
+package core.domain.client;
+
 import java.time.LocalDate;
 
 public class Membership {

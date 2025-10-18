@@ -1,20 +1,19 @@
-import src.core.domain.client.Client;
-import src.core.domain.client.Membership;
-import src.core.domain.client.MembershipType;
-import src.core.domain.club.FitnessClub;
-import src.core.domain.club.FitnessNetwork;
-import src.core.domain.club.Studio;
+import core.domain.client.Client;
+import core.domain.client.Membership;
+import core.domain.client.MembershipType;
+import core.domain.club.FitnessClub;
+import core.domain.club.FitnessNetwork;
+import core.domain.club.Studio;
+import core.domain.shop.Product;
+import core.domain.shop.ProductFactory;
+import core.domain.staff.Administrator;
+import core.domain.staff.Cleaner;
+import core.domain.staff.Trainer;
+import core.domain.scheduling.GroupClass;
 
-import src.core.domain.exceptions.BookingException;
-import src.core.domain.exceptions.MembershipAccessException;
-import src.core.domain.exceptions.ProductOutOfStockException;
-import src.core.domain.scheduling.GroupClass;
-
-import src.core.domain.shop.Product;
-import src.core.domain.shop.ProductFactory;
-import src.core.domain.staff.Administrator;
-import src.core.domain.staff.Cleaner;
-import src.core.domain.staff.Trainer;
+import core.exceptions.BookingException;
+import core.exceptions.MembershipAccessException;
+import core.exceptions.ProductOutOfStockException;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,9 +42,9 @@ public class Main {
         Administrator adminPetro = new Administrator("Петро Іваненко", 30000);
         Cleaner cleanerMaria = new Cleaner("Марія Сидоренко", 15000, List.of("Роздягальні", "Басейн"));
 
-        clubOnObolon.addEmployee(trainerAnna);
-        clubOnObolon.addEmployee(adminPetro);
-        clubOnObolon.addEmployee(cleanerMaria);
+        clubOnObolon.addStaff(trainerAnna);
+        clubOnObolon.addStaff(adminPetro);
+        clubOnObolon.addStaff(cleanerMaria);
         System.out.println("Найнято співробітників: " + trainerAnna.getFullName() + ", " + adminPetro.getFullName() + ", " + cleanerMaria.getFullName());
 
         System.out.println("\n--- 3. Наповнення складу товарів (з обробкою винятків) ---");

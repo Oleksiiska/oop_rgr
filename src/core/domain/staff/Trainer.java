@@ -1,4 +1,4 @@
-package src.core.domain.staff;
+package core.domain.staff;
 
 public class Trainer extends Employee {
     private String specialization; // Спеціалізація (напр., "Йога", "Силові тренування")

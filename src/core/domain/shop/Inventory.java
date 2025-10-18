@@ -1,6 +1,6 @@
-package src.core.domain.shop;
+package core.domain.shop;
 
-// import src.core.domain.exceptions.ProductOutOfStockException; // Ваше власне виключення
+import core.exceptions.ProductOutOfStockException;
 import java.util.HashMap;
 import java.util.Map;
 

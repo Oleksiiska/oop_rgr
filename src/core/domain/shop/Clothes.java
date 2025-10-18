@@ -1,8 +1,8 @@
-package src.core.domain.shop;
+package core.domain.shop;
 
 public class Clothes extends Product {
-    private String size;
-    private String color;
+    private final String size;
+    private final String color;
 
     public Clothes(String name, double price, String size, String color) {
         super(name, price);

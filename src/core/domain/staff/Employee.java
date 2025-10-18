@@ -1,4 +1,4 @@
-package src.core.domain.staff;
+package core.domain.staff;
 
 public abstract class Employee {
     protected String fullName;

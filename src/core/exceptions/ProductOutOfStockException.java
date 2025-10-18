@@ -1,4 +1,4 @@
-package src.core.exceptions;
+package core.exceptions;
 
 public class ProductOutOfStockException extends FitnessClubException {
     public ProductOutOfStockException(String message) {

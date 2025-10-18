@@ -1,12 +1,14 @@
-package src.core.domain.scheduling;
+package core.domain.scheduling;
 
-import src.core.domain.client.Client;
-import src.core.domain.club.Studio;
-import src.core.domain.staff.Trainer;
+import core.domain.client.Client;
+import core.domain.club.Studio;
+import core.domain.staff.Trainer;
+import core.exceptions.BookingException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class GroupClass {
     private final String id;
@@ -23,6 +25,7 @@ public class GroupClass {
             throw new IllegalArgumentException("Тривалість заняття повинна бути позитивною");
         }
 
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.trainer = trainer;
         this.studio = studio;
@@ -32,7 +35,7 @@ public class GroupClass {
         this.participants = new ArrayList<>();
     }
 
-    public void addParticipant(Client client) throws ClassIsFullException {
+    public void addParticipant(Client client) throws BookingException {
         if (participants.size() >= maxCapacity) {
             throw new BookingException("Запис неможливий: група '" + this.name + "' заповнена.");
         }

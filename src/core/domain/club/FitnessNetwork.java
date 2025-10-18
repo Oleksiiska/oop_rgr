@@ -1,3 +1,5 @@
+package core.domain.club;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class FitnessNetwork {
     }
 
     public List<FitnessClub> getClubs() {
-        return List.copyOf(clubs); /*unmutable copy*/
+        return List.copyOf(clubs); /*immutable copy*/
     }
 
     public void addClub(FitnessClub club) {

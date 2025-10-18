@@ -1,10 +1,14 @@
-package src.core.domain.club;
+package core.domain.club;
+
+import java.util.UUID;
 
 public class Studio {
+    private final String id;
     private String name;
-    private int capacity;
+    private final int capacity;
 
     public Studio(String name, int capacity) {
+        this.id = UUID.randomUUID().toString();
         this.name = name;
         this.capacity = capacity;
     }
@@ -19,5 +23,9 @@ public class Studio {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public Object getId() {
+        return id;
     }
 }

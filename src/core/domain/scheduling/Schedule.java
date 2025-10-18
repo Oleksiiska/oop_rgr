@@ -1,4 +1,6 @@
-package src.core.domain.scheduling;
+package core.domain.scheduling;
+
+import core.domain.club.Studio;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
