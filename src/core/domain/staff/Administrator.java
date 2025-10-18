@@ -13,4 +13,8 @@ public class Administrator extends Employee {
     public void approveNewMembership() {
         System.out.println("Адміністратор " + fullName + " затверджує новий абонемент.");
     }
+
+    public void manageSchedule() {
+        System.out.println("Адміністратор " + fullName + " погодив розклад.");
+    }
 }

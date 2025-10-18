@@ -51,7 +51,7 @@ public class Main {
         System.out.println("\n--- 3. Наповнення складу товарів (з обробкою винятків) ---");
 
         ProductFactory productFactory = new ProductFactory();
-        Product yogaMat = productFactory.createProduct("APPAREL", "Килимок для йоги", 800, "Standard", "Синій");
+        Product yogaMat = productFactory.createProduct("CLOSE", "Килимок для йоги", 800, "Standard", "Синій");
 
         try {
             clubOnObolon.getInventory().addProduct(yogaMat, 15);
