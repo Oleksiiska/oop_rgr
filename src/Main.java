@@ -4,9 +4,14 @@ import src.core.domain.client.MembershipType;
 import src.core.domain.club.FitnessClub;
 import src.core.domain.club.FitnessNetwork;
 import src.core.domain.club.Studio;
+
+import src.core.domain.exceptions.BookingException;
+import src.core.domain.exceptions.MembershipAccessException;
+import src.core.domain.exceptions.ProductOutOfStockException;
 import src.core.domain.scheduling.GroupClass;
-import src.core.domain.shop.Apparel;
+
 import src.core.domain.shop.Product;
+import src.core.domain.shop.ProductFactory;
 import src.core.domain.staff.Administrator;
 import src.core.domain.staff.Cleaner;
 import src.core.domain.staff.Trainer;
@@ -19,7 +24,7 @@ public class Main {
     public static void main(String[] args) {
         System.out.println("--- 1. Створення інфраструктури мережі ---");
 
-        FitnessNetwork network = new FitnessNetwork("MyFitness Kyiv");
+        FitnessNetwork network = FitnessNetwork.getInstance("MyFitness Kyiv");
         System.out.println("Створено мережу: " + network.getName());
 
         FitnessClub clubOnObolon = new FitnessClub("м. Київ, пр. Оболонський, 1");
@@ -41,24 +46,42 @@ public class Main {
         clubOnObolon.addEmployee(trainerAnna);
         clubOnObolon.addEmployee(adminPetro);
         clubOnObolon.addEmployee(cleanerMaria);
-        System.out.println("Найнято співробітників: " + trainerAnna.getFullName() + " (" + trainerAnna.getJobTitle() + "), " + adminPetro.getFullName() + ", " + cleanerMaria.getFullName());
+        System.out.println("Найнято співробітників: " + trainerAnna.getFullName() + ", " + adminPetro.getFullName() + ", " + cleanerMaria.getFullName());
 
-        System.out.println("\n--- 3. Наповнення складу товарів ---");
+        System.out.println("\n--- 3. Наповнення складу товарів (з обробкою винятків) ---");
 
-        Product yogaMat = new Apparel("Килимок для йоги", 800, "Standard", "Синій");
-        clubOnObolon.getInventory().addProduct(yogaMat, 15); // 15 килимків
-        System.out.println("Додано на склад: '" + yogaMat.getName() + "', кількість: " + clubOnObolon.getInventory().getStockLevel(yogaMat));
+        ProductFactory productFactory = new ProductFactory();
+        Product yogaMat = productFactory.createProduct("APPAREL", "Килимок для йоги", 800, "Standard", "Синій");
+
+        try {
+            clubOnObolon.getInventory().addProduct(yogaMat, 15);
+            System.out.println("Додано на склад: '" + yogaMat.getName() + "', кількість: " + clubOnObolon.getInventory().getStockLevel(yogaMat));
+
+            System.out.println("Намагаємося продати 20 килимків...");
+            clubOnObolon.getInventory().removeProduct(yogaMat, 20);
+            System.out.println("Товар продано (ЦЕ ПОВІДОМЛЕННЯ НЕ МАЄ З'ЯВИТИСЯ)");
+
+        } catch (ProductOutOfStockException e) {
+            System.out.println("ПОМИЛКА СКЛАДУ: " + e.getMessage());
+        } catch (IllegalArgumentException e) {
+            System.out.println("ПОМИЛКА ВАЛІДАЦІЇ: " + e.getMessage());
+        }
 
         System.out.println("\n--- 4. Реєстрація клієнта та продаж абонемента ---");
+
         Client clientOlena = new Client("Олена Ковальчук", "+380991234567");
 
-        Membership membership = new Membership(MembershipType.SINGLE_CLUB, LocalDate.now(), 30, clubOnObolon.getId());
+        Membership membership = new Membership.Builder(MembershipType.SINGLE_CLUB, LocalDate.now())
+                .withDurationInDays(30)
+                .forClub(clubOnObolon.getId())
+                .build();
+
         clientOlena.assignMembership(membership);
         System.out.println("Зареєстровано клієнта: " + clientOlena.getFullName());
         System.out.println("Тип абонемента: " + clientOlena.getMembership().getType());
         System.out.println("Чи активний абонемент? -> " + clientOlena.hasActiveMembership());
 
-        System.out.println("\n--- 5. Імітація бізнес-процесу: Запис на заняття ---");
+        System.out.println("\n--- 5. Імітація бізнес-процесу: Запис на заняття (з обробкою винятків) ---");
 
         LocalDateTime yogaClassTime = LocalDateTime.now().plusDays(1).withHour(18).withMinute(0);
         GroupClass yogaClass = new GroupClass("Вечірня йога", trainerAnna, yogaStudio, yogaClassTime, 60);
@@ -68,20 +91,22 @@ public class Main {
             System.out.println("Заняття '" + yogaClass.getName() + "' успішно додано до розкладу на " + yogaClass.getStartTime());
         }
 
-
         System.out.println("Клієнт " + clientOlena.getFullName() + " намагається записатися на йогу...");
+        try {
 
-        if (clientOlena.hasActiveMembership()) {
-            if (clientOlena.getMembership().hasAccessToClub(clubOnObolon.getId())) {
-                boolean booked = yogaClass.addParticipant(clientOlena);
-                if (booked) {
-                    System.out.println("Успіх! Клієнт записаний. Кількість учасників: " + yogaClass.getCurrentSize() + "/" + yogaClass.getMaxCapacity());
-                }
-            } else {
-                System.out.println("Відмова: Абонемент не дійсний для цього клубу.");
+            if (!clientOlena.hasActiveMembership()) {
+                throw new MembershipAccessException("Абонемент неактивний.");
             }
-        } else {
-            System.out.println("Відмова: Абонемент неактивний.");
+
+            if (!clientOlena.getMembership().hasAccessToClub(clubOnObolon.getId())) {
+                throw new MembershipAccessException("Абонемент не дійсний для цього клубу.");
+            }
+
+            yogaClass.addParticipant(clientOlena);
+            System.out.println("УСПІХ! Клієнт записаний. Кількість учасників: " + yogaClass.getCurrentSize() + "/" + yogaClass.getMaxCapacity());
+
+        } catch (BookingException e) {
+            System.out.println("ПОМИЛКА БРОНЮВАННЯ: " + e.getMessage());
         }
 
         System.out.println("\n--- Демонстрація завершена ---");

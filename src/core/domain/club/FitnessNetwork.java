@@ -2,12 +2,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FitnessNetwork {
+    private static FitnessNetwork instance;
+
     private final String name;
     private final List<FitnessClub> clubs;
 
-    public FitnessNetwork(String name) {
+    private FitnessNetwork(String name) {
         this.name = name;
         this.clubs = new ArrayList<>();
+    }
+
+    public static FitnessNetwork getInstance(String name) {
+        if (instance == null) {
+            instance = new FitnessNetwork(name);
+        }
+        return instance;
     }
 
     public String getName() {
