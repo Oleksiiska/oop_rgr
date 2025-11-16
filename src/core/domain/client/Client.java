@@ -1,5 +1,7 @@
 package core.domain.client;
 
+import core.domain.staff.Administrator;
+
 public class Client {
     private final String fullName;
     private Membership membership; // can be null
@@ -10,8 +12,24 @@ public class Client {
         this.phoneNumber = phoneNumber;
     }
 
-    public void assignMembership(Membership membership) {
-        this.membership = membership;
+    
+    public void assignMembership(Membership membership, Administrator administrator) {
+        if (administrator == null) {
+            throw new IllegalArgumentException("Адміністратор не може бути null.");
+        }
+        
+        if (membership == null) {
+            throw new IllegalArgumentException("Абонемент не може бути null.");
+        }
+        
+        // Get administrator approval before assigning
+        boolean approved = administrator.approveNewMembership(membership);
+        
+        if (approved) {
+            this.membership = membership;
+        } else {
+            throw new IllegalArgumentException("Абонемент не було затверджено адміністратором.");
+        }
     }
 
     public boolean hasActiveMembership() {

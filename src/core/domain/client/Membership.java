@@ -13,6 +13,7 @@ public class Membership {
         this.startDate = builder.startDate;
         this.endDate = builder.startDate.plusDays(builder.durationInDays);
         this.clubId = builder.clubId;
+        float cost = builder.cost;
     }
 
     public boolean isActive() {
@@ -31,16 +32,30 @@ public class Membership {
         return type;
     }
 
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public String getClubId() {
+        return clubId;
+    }
+
     public static class Builder {
         private final MembershipType type;
         private final LocalDate startDate;
+        private final float cost;
 
         private int durationInDays = 30;
         private String clubId = null;
 
-        public Builder(MembershipType type, LocalDate startDate) {
+        public Builder(MembershipType type, LocalDate startDate, float cost) {
             this.type = type;
             this.startDate = startDate;
+            this.cost = cost;
         }
 
         public Builder withDurationInDays(int duration) {
@@ -73,4 +88,6 @@ public class Membership {
             return new Membership(this);
         }
     }
+
+
 }

@@ -30,8 +30,8 @@ public class Main {
         network.addClub(clubOnObolon);
         System.out.println("Додано клуб за адресою: " + clubOnObolon.getAddress());
 
-        Studio yogaStudio = new Studio("Зал для йоги", 20);
-        Studio pool = new Studio("Басейн", 50);
+        Studio yogaStudio = new Studio("Зал для йоги", 20, false);
+        Studio pool = new Studio("Басейн", 50, true);
         clubOnObolon.addStudio(yogaStudio);
         clubOnObolon.addStudio(pool);
         System.out.println("Додано студії: " + yogaStudio.getName() + ", " + pool.getName());
@@ -70,12 +70,12 @@ public class Main {
 
         Client clientOlena = new Client("Олена Ковальчук", "+380991234567");
 
-        Membership membership = new Membership.Builder(MembershipType.SINGLE_CLUB, LocalDate.now())
+        Membership membership = new Membership.Builder(MembershipType.SINGLE_CLUB, LocalDate.now(), 500)
                 .withDurationInDays(30)
                 .forClub(clubOnObolon.getId())
                 .build();
 
-        clientOlena.assignMembership(membership);
+        clientOlena.assignMembership(membership, adminPetro);
         System.out.println("Зареєстровано клієнта: " + clientOlena.getFullName());
         System.out.println("Тип абонемента: " + clientOlena.getMembership().getType());
         System.out.println("Чи активний абонемент? -> " + clientOlena.hasActiveMembership());
