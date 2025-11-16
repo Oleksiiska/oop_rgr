@@ -3,6 +3,7 @@ package core.domain.club;
 import core.domain.scheduling.Schedule;
 import core.domain.shop.Inventory;
 import core.domain.staff.Employee;
+import core.interfaces.IEmployee;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +14,7 @@ public class FitnessClub {
     private final String address;
     private final Schedule schedule;
     private final Inventory inventory;
-    private final List<Employee> staff;
+    private final List<IEmployee> staff;  // Using interface for low coupling
     private final List<Studio> studios;
 
     public FitnessClub(String address) {
@@ -26,6 +27,9 @@ public class FitnessClub {
     }
 
     public void addStaff(Employee employee) {
+        if (employee == null) {
+            throw new IllegalArgumentException("Співробітник не може бути null.");
+        }
         this.staff.add(employee);
     }
 
@@ -49,7 +53,7 @@ public class FitnessClub {
         return inventory;
     }
 
-    public List<Employee> getStaff() {
+    public List<IEmployee> getStaff() {
         return List.copyOf(staff);
     }
 

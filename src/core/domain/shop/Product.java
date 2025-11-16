@@ -1,8 +1,9 @@
 package core.domain.shop;
 
+import core.interfaces.IProduct;
 import java.util.UUID;
 
-public abstract class Product {
+public abstract class Product implements IProduct {
     protected final String id;
     protected String name;
     protected double price;

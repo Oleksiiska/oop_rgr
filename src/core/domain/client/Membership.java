@@ -1,5 +1,6 @@
 package core.domain.client;
 
+import core.interfaces.IMembershipStrategy;
 import java.time.LocalDate;
 
 public class Membership {
@@ -7,6 +8,8 @@ public class Membership {
     private final LocalDate startDate;
     private final LocalDate endDate;
     private final String clubId; // null, when NETWORK_WIDE
+    private final IMembershipStrategy accessStrategy;
+    private MembershipState currentState;
 
     private Membership(Builder builder) {
         this.type = builder.type;
@@ -14,18 +17,31 @@ public class Membership {
         this.endDate = builder.startDate.plusDays(builder.durationInDays);
         this.clubId = builder.clubId;
         float cost = builder.cost;
+        this.accessStrategy = MembershipStrategy.getStrategy(this.type);
+        this.currentState = MembershipStateImpl.getState(startDate, endDate);
     }
 
     public boolean isActive() {
-        LocalDate today = LocalDate.now();
-        return !today.isBefore(startDate) && !today.isAfter(endDate);
+        updateState();
+        return currentState.isActive();
+    }
+    
+    public boolean canBook() {
+        updateState();
+        return currentState.canBook();
+    }
+    
+    public String getStatusDescription() {
+        updateState();
+        return currentState.getStatusDescription();
+    }
+    
+    private void updateState() {
+        this.currentState = MembershipStateImpl.getState(startDate, endDate);
     }
 
     public boolean hasAccessToClub(String clubId) {
-        if (this.type == MembershipType.NETWORK_WIDE) {
-            return true;
-        }
-        return this.type == MembershipType.SINGLE_CLUB && this.clubId.equals(clubId);
+        return accessStrategy.hasAccessToClub(clubId, this.clubId);
     }
 
     public MembershipType getType() {

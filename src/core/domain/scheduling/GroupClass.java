@@ -4,6 +4,8 @@ import core.domain.client.Client;
 import core.domain.club.Studio;
 import core.domain.staff.Trainer;
 import core.exceptions.BookingException;
+import core.patterns.observer.Event;
+import core.patterns.observer.Observable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -19,6 +21,8 @@ public class GroupClass {
     private final LocalDateTime endTime;
     private final int maxCapacity;
     private final List<Client> participants;
+    private boolean isCancelled;
+    private final Observable<Event> eventObservable;
 
     public GroupClass(String name, Trainer trainer, Studio studio, LocalDateTime startTime, int durationMinutes) {
         if (durationMinutes <= 0) {
@@ -33,10 +37,28 @@ public class GroupClass {
         this.endTime = startTime.plusMinutes(durationMinutes);
         this.maxCapacity = studio.getCapacity();
         this.participants = new ArrayList<>();
+        this.isCancelled = false;
+        this.eventObservable = new Observable<>();
+    }
+    
+    public void addObserver(core.patterns.observer.Observer<Event> observer) {
+        eventObservable.addObserver(observer);
+    }
+    
+    public void removeObserver(core.patterns.observer.Observer<Event> observer) {
+        eventObservable.removeObserver(observer);
     }
 
     public void addParticipant(Client client) throws BookingException {
+        ClassState state = getCurrentState();
+        
+        if (!state.canAddParticipant()) {
+            throw new BookingException("Запис неможливий: заняття в стані '" + state.getStatusDescription() + "'.");
+        }
+        
         if (participants.size() >= maxCapacity) {
+            eventObservable.notifyObservers(new Event(Event.EventType.CLASS_FULL, 
+                "Група '" + this.name + "' заповнена", this));
             throw new BookingException("Запис неможливий: група '" + this.name + "' заповнена.");
         }
 
@@ -45,6 +67,25 @@ public class GroupClass {
         }
 
         participants.add(client);
+        eventObservable.notifyObservers(new Event(Event.EventType.BOOKING_CONFIRMED, 
+            "Клієнт записаний на заняття '" + this.name + "'", this));
+    }
+    
+    public void cancel() {
+        ClassState state = getCurrentState();
+        if (state.canCancel()) {
+            this.isCancelled = true;
+            eventObservable.notifyObservers(new Event(Event.EventType.CLASS_CANCELLED, 
+                "Заняття '" + this.name + "' скасовано", this));
+        }
+    }
+    
+    public ClassState getCurrentState() {
+        return ClassStateImpl.getState(startTime, endTime, isCancelled);
+    }
+    
+    public boolean isCancelled() {
+        return isCancelled;
     }
 
     public void removeParticipant(Client client) {

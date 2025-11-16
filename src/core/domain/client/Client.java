@@ -12,24 +12,14 @@ public class Client {
         this.phoneNumber = phoneNumber;
     }
 
-    
+    /**
+     * Assigns a membership to this client.
+     */
     public void assignMembership(Membership membership, Administrator administrator) {
-        if (administrator == null) {
-            throw new IllegalArgumentException("Адміністратор не може бути null.");
-        }
-        
         if (membership == null) {
             throw new IllegalArgumentException("Абонемент не може бути null.");
         }
-        
-        // Get administrator approval before assigning
-        boolean approved = administrator.approveNewMembership(membership);
-        
-        if (approved) {
-            this.membership = membership;
-        } else {
-            throw new IllegalArgumentException("Абонемент не було затверджено адміністратором.");
-        }
+        this.membership = membership;
     }
 
     public boolean hasActiveMembership() {

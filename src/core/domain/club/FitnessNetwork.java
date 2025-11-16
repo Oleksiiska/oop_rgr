@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FitnessNetwork {
-    private static FitnessNetwork instance;
+    private static volatile FitnessNetwork instance;
+    private static final Object lock = new Object();
 
     private final String name;
     private final List<FitnessClub> clubs;
@@ -16,7 +17,11 @@ public class FitnessNetwork {
 
     public static FitnessNetwork getInstance(String name) {
         if (instance == null) {
-            instance = new FitnessNetwork(name);
+            synchronized (lock) {
+                if (instance == null) {
+                    instance = new FitnessNetwork(name);
+                }
+            }
         }
         return instance;
     }

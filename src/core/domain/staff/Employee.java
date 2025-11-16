@@ -1,6 +1,8 @@
 package core.domain.staff;
 
-public abstract class Employee {
+import core.interfaces.IEmployee;
+
+public abstract class Employee implements IEmployee {
     protected String fullName;
     protected double salary;
 
