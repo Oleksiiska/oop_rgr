@@ -3,9 +3,10 @@ package core.domain.scheduling;
 import core.domain.client.Client;
 import core.domain.club.Studio;
 import core.domain.staff.Trainer;
+import core.event.Observer;
 import core.exceptions.BookingException;
-import core.patterns.observer.Event;
-import core.patterns.observer.Observable;
+import core.event.Event;
+import core.event.Observable;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -41,11 +42,11 @@ public class GroupClass {
         this.eventObservable = new Observable<>();
     }
     
-    public void addObserver(core.patterns.observer.Observer<Event> observer) {
+    public void addObserver(Observer<Event> observer) {
         eventObservable.addObserver(observer);
     }
     
-    public void removeObserver(core.patterns.observer.Observer<Event> observer) {
+    public void removeObserver(Observer<Event> observer) {
         eventObservable.removeObserver(observer);
     }
 

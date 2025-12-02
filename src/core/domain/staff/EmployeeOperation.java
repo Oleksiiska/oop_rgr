@@ -1,9 +1,9 @@
-package core.interfaces;
+package core.domain.staff;
 
 /**
  * Interface for employee operations.
  */
-public interface IEmployee {
+public interface EmployeeOperation {
     String getJobTitle();
     String getFullName();
     double getSalary();

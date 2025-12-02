@@ -1,9 +1,9 @@
-package core.interfaces;
+package core.domain.shop;
 
 /**
  * Interface for product operations.
  */
-public interface IProduct {
+public interface ProductOperation {
     String getId();
     String getName();
     double getPrice();

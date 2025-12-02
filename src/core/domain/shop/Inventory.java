@@ -1,14 +1,14 @@
 package core.domain.shop;
 
+import core.event.Observer;
 import core.exceptions.ProductOutOfStockException;
-import core.interfaces.IProduct;
-import core.patterns.observer.Event;
-import core.patterns.observer.Observable;
+import core.event.Event;
+import core.event.Observable;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Inventory {
-    private final Map<IProduct, Integer> stock;
+    private final Map<ProductOperation, Integer> stock;
     private final Observable<Event> eventObservable;
     private static final int LOW_STOCK_THRESHOLD = 5;
 
@@ -17,15 +17,15 @@ public class Inventory {
         this.eventObservable = new Observable<>();
     }
     
-    public void addObserver(core.patterns.observer.Observer<Event> observer) {
+    public void addObserver(Observer<Event> observer) {
         eventObservable.addObserver(observer);
     }
     
-    public void removeObserver(core.patterns.observer.Observer<Event> observer) {
+    public void removeObserver(Observer<Event> observer) {
         eventObservable.removeObserver(observer);
     }
 
-    public void addProduct(IProduct product, int quantity) {
+    public void addProduct(ProductOperation product, int quantity) {
         if (product == null) {
             throw new IllegalArgumentException("Продукт не може бути null.");
         }
@@ -35,7 +35,7 @@ public class Inventory {
         stock.put(product, stock.getOrDefault(product, 0) + quantity);
     }
 
-    public void removeProduct(IProduct product, int quantity) throws ProductOutOfStockException {
+    public void removeProduct(ProductOperation product, int quantity) throws ProductOutOfStockException {
         if (product == null) {
             throw new IllegalArgumentException("Продукт не може бути null.");
         }
@@ -57,21 +57,21 @@ public class Inventory {
         }
     }
 
-    public boolean hasEnoughStock(IProduct product, int quantity) {
+    public boolean hasEnoughStock(ProductOperation product, int quantity) {
         if (product == null) {
             return false;
         }
         return getStockLevel(product) >= quantity;
     }
 
-    public int getStockLevel(IProduct product) {
+    public int getStockLevel(ProductOperation product) {
         if (product == null) {
             return 0;
         }
         return stock.getOrDefault(product, 0);
     }
 
-    public Map<IProduct, Integer> getStock() {
+    public Map<ProductOperation, Integer> getStock() {
         return Map.copyOf(stock);
     }
 }

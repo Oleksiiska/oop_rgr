@@ -1,4 +1,4 @@
-package core.patterns.observer;
+package core.event;
 
 import java.time.LocalDateTime;
 
