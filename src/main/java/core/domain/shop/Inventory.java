@@ -28,20 +28,10 @@ public class Inventory {
         this.eventObservable = new Observable<>();
     }
     
-    /**
-     * Adds an observer to be notified of inventory events.
-     *
-     * @param observer the observer to add
-     */
     public void addObserver(Observer<Event> observer) {
         eventObservable.addObserver(observer);
     }
     
-    /**
-     * Removes an observer from the notification list.
-     *
-     * @param observer the observer to remove
-     */
     public void removeObserver(Observer<Event> observer) {
         eventObservable.removeObserver(observer);
     }

@@ -39,14 +39,6 @@ public class MembershipService {
         client.assignMembership(membership, administrator);
     }
 
-    /**
-     * Validates if a client can access a specific club.
-     *
-     * @param client the client to validate (must not be null)
-     * @param clubId the club ID to check access for (must not be null or blank)
-     * @throws MembershipAccessException if the client does not have access
-     * @throws IllegalArgumentException if client or clubId is null
-     */
     public void validateClubAccess(Client client, String clubId) throws MembershipAccessException {
         ValidationUtils.requireNonNull(client, "Клієнт не може бути null.");
         ValidationUtils.requireNonBlank(clubId, "ID клубу не може бути порожнім.");

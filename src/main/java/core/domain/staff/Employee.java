@@ -23,50 +23,23 @@ public abstract class Employee implements EmployeeOperation {
         this.salary = ValidationUtils.requireNonNegative(salary, Constants.ERROR_EMPLOYEE_SALARY_NEGATIVE);
     }
 
-    /**
-     * Gets the job title of this employee.
-     *
-     * @return the job title
-     */
     public abstract String getJobTitle();
 
-    /**
-     * Gets the full name of the employee.
-     *
-     * @return the full name
-     */
     @Override
     public String getFullName() {
         return fullName;
     }
 
-    /**
-     * Sets the full name of the employee.
-     *
-     * @param fullName the new full name (must not be null or blank)
-     * @throws IllegalArgumentException if fullName is null or blank
-     */
     @Override
     public void setFullName(String fullName) {
         this.fullName = ValidationUtils.requireNonBlank(fullName, Constants.ERROR_EMPLOYEE_NAME_BLANK);
     }
 
-    /**
-     * Gets the salary of the employee.
-     *
-     * @return the salary
-     */
     @Override
     public double getSalary() {
         return salary;
     }
 
-    /**
-     * Sets the salary of the employee.
-     *
-     * @param salary the new salary (must be non-negative)
-     * @throws IllegalArgumentException if salary is negative
-     */
     @Override
     public void setSalary(double salary) {
         this.salary = ValidationUtils.requireNonNegative(salary, Constants.ERROR_EMPLOYEE_SALARY_NEGATIVE);

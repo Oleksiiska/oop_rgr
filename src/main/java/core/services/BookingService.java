@@ -53,13 +53,6 @@ public class BookingService {
         groupClass.addParticipant(client);
     }
     
-    /**
-     * Cancels a client's booking for a group class.
-     *
-     * @param client the client whose booking to cancel (must not be null)
-     * @param groupClass the class to cancel booking for (must not be null)
-     * @throws IllegalArgumentException if any parameter is null
-     */
     public void cancelBooking(Client client, GroupClass groupClass) {
         ValidationUtils.requireNonNull(client, "Клієнт не може бути null.");
         ValidationUtils.requireNonNull(groupClass, "Заняття не може бути null.");

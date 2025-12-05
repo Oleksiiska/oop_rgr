@@ -46,41 +46,19 @@ public class FitnessNetwork {
         return instance;
     }
 
-    /**
-     * Gets the name of the network.
-     *
-     * @return the name
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Gets the list of clubs in the network.
-     *
-     * @return an immutable copy of the clubs list
-     */
     public List<FitnessClub> getClubs() {
         return List.copyOf(clubs);
     }
 
-    /**
-     * Adds a club to the network.
-     *
-     * @param club the club to add (must not be null)
-     * @throws IllegalArgumentException if club is null
-     */
     public void addClub(FitnessClub club) {
         ValidationUtils.requireNonNull(club, Constants.ERROR_CLUB_NULL);
         this.clubs.add(club);
     }
 
-    /**
-     * Removes a club from the network.
-     *
-     * @param club the club to remove (must not be null)
-     * @throws IllegalArgumentException if club is null
-     */
     public void removeClub(FitnessClub club) {
         ValidationUtils.requireNonNull(club, Constants.ERROR_CLUB_NULL);
         this.clubs.remove(club);

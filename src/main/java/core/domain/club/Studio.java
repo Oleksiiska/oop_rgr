@@ -52,57 +52,26 @@ public class Studio {
         }
     }
 
-    /**
-     * Gets the name of the studio.
-     *
-     * @return the name
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Gets the maximum capacity of the studio.
-     *
-     * @return the capacity
-     */
     public int getCapacity() {
         return capacity;
     }
 
-    /**
-     * Checks if the studio is clean.
-     *
-     * @return true if clean, false otherwise
-     */
     public boolean isClean() {
         return cleanliness;
     }
 
-    /**
-     * Sets the cleanliness status of the studio.
-     *
-     * @param cleanliness the new cleanliness status
-     */
     public void setCleanliness(boolean cleanliness) {
         this.cleanliness = cleanliness;
     }
 
-    /**
-     * Sets the name of the studio.
-     *
-     * @param name the new name (must not be null or blank)
-     * @throws IllegalArgumentException if name is null or blank
-     */
     public void setName(String name) {
         this.name = ValidationUtils.requireNonBlank(name, Constants.ERROR_STUDIO_NAME_BLANK);
     }
 
-    /**
-     * Gets the unique identifier of the studio.
-     *
-     * @return the studio ID
-     */
     public String getId() {
         return id;
     }

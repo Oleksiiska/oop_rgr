@@ -23,31 +23,15 @@ public class Trainer extends Employee {
         this.specialization = ValidationUtils.requireNonBlank(specialization, "Спеціалізація не може бути порожньою.");
     }
 
-    /**
-     * Gets the job title of the trainer.
-     *
-     * @return "Тренер"
-     */
     @Override
     public String getJobTitle() {
         return Constants.JOB_TITLE_TRAINER;
     }
 
-    /**
-     * Gets the trainer's specialization.
-     *
-     * @return the specialization
-     */
     public String getSpecialization() {
         return specialization;
     }
 
-    /**
-     * Sets the trainer's specialization.
-     *
-     * @param specialization the new specialization (must not be null or blank)
-     * @throws IllegalArgumentException if specialization is null or blank
-     */
     public void setSpecialization(String specialization) {
         this.specialization = ValidationUtils.requireNonBlank(specialization, "Спеціалізація не може бути порожньою.");
     }

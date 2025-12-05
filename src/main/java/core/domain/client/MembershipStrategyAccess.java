@@ -1,10 +1,10 @@
-package core.interfaces;
+package core.domain.client;
 
 /**
  * Strategy interface for determining membership access to clubs.
  * Different membership types implement different access strategies.
  */
-public interface IMembershipStrategy {
+public interface MembershipStrategyAccess {
     /**
      * Checks if a membership grants access to a specific club.
      *

@@ -22,11 +22,6 @@ public class Administrator extends Employee {
         super(fullName, salary);
     }
 
-    /**
-     * Gets the job title of the administrator.
-     *
-     * @return "Адміністратор"
-     */
     @Override
     public String getJobTitle() {
         return Constants.JOB_TITLE_ADMINISTRATOR;
@@ -64,10 +59,6 @@ public class Administrator extends Employee {
         return true;
     }
 
-    /**
-     * Manages the club schedule.
-     * Logs the schedule management action.
-     */
     public void manageSchedule() {
         System.out.println("Адміністратор " + fullName + " погодив розклад.");
     }

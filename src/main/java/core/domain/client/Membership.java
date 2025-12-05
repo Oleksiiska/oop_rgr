@@ -1,6 +1,6 @@
 package core.domain.client;
 
-import core.interfaces.IMembershipStrategy;
+import core.domain.shop.DiscountStrategy;
 import core.util.Constants;
 import core.util.ValidationUtils;
 import java.time.LocalDate;
@@ -15,7 +15,9 @@ public class Membership {
     private final LocalDate startDate;
     private final LocalDate endDate;
     private final String clubId; // null, when NETWORK_WIDE
-    private final IMembershipStrategy accessStrategy;
+    private final MembershipStrategyAccess accessStrategy;
+    private final float originalCost;
+    private final core.domain.shop.DiscountOperation discountStrategy;
     private MembershipState currentState;
 
     private Membership(Builder builder) {
@@ -24,91 +26,66 @@ public class Membership {
         this.endDate = builder.startDate.plusDays(builder.durationInDays);
         this.clubId = builder.clubId;
         this.accessStrategy = MembershipStrategy.getStrategy(this.type);
+        this.originalCost = builder.cost;
+        this.discountStrategy = builder.discountStrategy != null 
+            ? builder.discountStrategy 
+            : DiscountStrategy.noDiscount();
         this.currentState = MembershipStateImpl.getState(startDate, endDate);
     }
 
-    /**
-     * Checks if the membership is currently active.
-     *
-     * @return true if the membership is active, false otherwise
-     */
     public boolean isActive() {
         updateState();
         return currentState.isActive();
     }
     
-    /**
-     * Checks if the membership allows booking classes.
-     *
-     * @return true if booking is allowed, false otherwise
-     */
     public boolean canBook() {
         updateState();
         return currentState.canBook();
     }
     
-    /**
-     * Gets a human-readable description of the membership status.
-     *
-     * @return the status description
-     */
     public String getStatusDescription() {
         updateState();
         return currentState.getStatusDescription();
     }
     
-    /**
-     * Updates the membership state based on current date.
-     */
     private void updateState() {
         this.currentState = MembershipStateImpl.getState(startDate, endDate);
     }
 
-    /**
-     * Checks if this membership grants access to a specific club.
-     *
-     * @param clubId the ID of the club to check access for
-     * @return true if access is granted, false otherwise
-     */
     public boolean hasAccessToClub(String clubId) {
         return accessStrategy.hasAccessToClub(clubId, this.clubId);
     }
 
-    /**
-     * Gets the membership type.
-     *
-     * @return the membership type
-     */
     public MembershipType getType() {
         return type;
     }
 
-    /**
-     * Gets the start date of the membership.
-     *
-     * @return the start date
-     */
     public LocalDate getStartDate() {
         return startDate;
     }
 
-    /**
-     * Gets the end date of the membership.
-     *
-     * @return the end date
-     */
     public LocalDate getEndDate() {
         return endDate;
     }
 
-    /**
-     * Gets the club ID associated with this membership.
-     * Returns null for network-wide memberships.
-     *
-     * @return the club ID, or null for network-wide memberships
-     */
     public String getClubId() {
         return clubId;
+    }
+    
+    public float getOriginalCost() {
+        return originalCost;
+    }
+    
+    public float getCost() {
+        return (float) discountStrategy.applyDiscount(originalCost);
+    }
+    
+    public float getDiscountAmount() {
+        return (float) discountStrategy.getDiscountAmount(originalCost);
+    }
+    
+    public core.domain.shop.DiscountOperation getDiscountStrategy() {
+        return discountStrategy;
     }
 
     /**
@@ -122,6 +99,7 @@ public class Membership {
 
         private int durationInDays = Constants.DEFAULT_MEMBERSHIP_DURATION_DAYS;
         private String clubId = null;
+        private core.domain.shop.DiscountOperation discountStrategy = null;
 
         /**
          * Creates a new membership builder.
@@ -136,34 +114,22 @@ public class Membership {
             this.cost = cost;
         }
 
-        /**
-         * Sets the duration of the membership in days.
-         *
-         * @param duration the duration in days (must be positive)
-         * @return this builder for method chaining
-         */
         public Builder withDurationInDays(int duration) {
             this.durationInDays = duration;
             return this;
         }
 
-        /**
-         * Sets the club ID for single-club memberships.
-         *
-         * @param clubId the club ID
-         * @return this builder for method chaining
-         */
         public Builder forClub(String clubId) {
             this.clubId = clubId;
             return this;
         }
+        
+        public Builder withDiscount(core.domain.shop.DiscountOperation discountStrategy) {
+            ValidationUtils.requireNonNull(discountStrategy, "Стратегія знижки не може бути null.");
+            this.discountStrategy = discountStrategy;
+            return this;
+        }
 
-        /**
-         * Builds a new Membership instance with the configured parameters.
-         *
-         * @return a new Membership instance
-         * @throws IllegalArgumentException if any validation fails
-         */
         public Membership build() {
             ValidationUtils.requireNonNull(type, Constants.ERROR_MEMBERSHIP_TYPE_NULL);
             ValidationUtils.requireNonNull(startDate, Constants.ERROR_MEMBERSHIP_START_DATE_NULL);

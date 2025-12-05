@@ -60,20 +60,10 @@ public class GroupClass {
         this.eventObservable = new Observable<>();
     }
     
-    /**
-     * Adds an observer to be notified of class events.
-     *
-     * @param observer the observer to add
-     */
     public void addObserver(Observer<Event> observer) {
         eventObservable.addObserver(observer);
     }
     
-    /**
-     * Removes an observer from the notification list.
-     *
-     * @param observer the observer to remove
-     */
     public void removeObserver(Observer<Event> observer) {
         eventObservable.removeObserver(observer);
     }
@@ -108,10 +98,6 @@ public class GroupClass {
             "Клієнт записаний на заняття '" + this.name + "'", this));
     }
     
-    /**
-     * Cancels the class if it is in a cancellable state.
-     * Notifies observers of the cancellation.
-     */
     public void cancel() {
         ClassState state = getCurrentState();
         if (state.canCancel()) {
@@ -121,120 +107,54 @@ public class GroupClass {
         }
     }
     
-    /**
-     * Gets the current state of the class based on time and cancellation status.
-     *
-     * @return the current class state
-     */
     public ClassState getCurrentState() {
         return ClassStateImpl.getState(startTime, endTime, isCancelled);
     }
     
-    /**
-     * Checks if the class has been cancelled.
-     *
-     * @return true if cancelled, false otherwise
-     */
     public boolean isCancelled() {
         return isCancelled;
     }
 
-    /**
-     * Removes a participant from the class.
-     *
-     * @param client the client to remove
-     */
     public void removeParticipant(Client client) {
         participants.remove(client);
     }
 
-    /**
-     * Checks if this class overlaps in time with another class.
-     *
-     * @param other the other class to check against
-     * @return true if the classes overlap in time, false otherwise
-     */
     public boolean overlapsWith(GroupClass other) {
         return this.startTime.isBefore(other.endTime) && this.endTime.isAfter(other.startTime);
     }
 
-    /**
-     * Gets the unique identifier of the class.
-     *
-     * @return the class ID
-     */
     public String getId() {
         return id;
     }
 
-    /**
-     * Gets the name of the class.
-     *
-     * @return the name
-     */
     public String getName() {
         return name;
     }
 
-    /**
-     * Gets the trainer conducting the class.
-     *
-     * @return the trainer
-     */
     public Trainer getTrainer() {
         return trainer;
     }
 
-    /**
-     * Gets the studio where the class takes place.
-     *
-     * @return the studio
-     */
     public Studio getStudio() {
         return studio;
     }
 
-    /**
-     * Gets the start time of the class.
-     *
-     * @return the start time
-     */
     public LocalDateTime getStartTime() {
         return startTime;
     }
 
-    /**
-     * Gets the end time of the class.
-     *
-     * @return the end time
-     */
     public LocalDateTime getEndTime() {
         return endTime;
     }
 
-    /**
-     * Gets the current number of participants.
-     *
-     * @return the current size
-     */
     public int getCurrentSize() {
         return participants.size();
     }
 
-    /**
-     * Gets the maximum capacity of the class.
-     *
-     * @return the maximum capacity
-     */
     public int getMaxCapacity() {
         return maxCapacity;
     }
 
-    /**
-     * Gets the list of participants.
-     *
-     * @return an immutable copy of the participants list
-     */
     public List<Client> getParticipants() {
         return List.copyOf(participants);
     }

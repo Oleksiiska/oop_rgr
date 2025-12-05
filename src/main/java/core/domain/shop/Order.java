@@ -37,40 +37,20 @@ public class Order {
         this.totalPrice = calculateTotalPrice();
     }
 
-    /**
-     * Calculates the total price of all items in the order.
-     *
-     * @return the total price
-     */
     private double calculateTotalPrice() {
         return items.stream()
                 .mapToDouble(OrderItem::getTotalPrice)
                 .sum();
     }
 
-    /**
-     * Gets the unique identifier of the order.
-     *
-     * @return the order ID
-     */
     public String getId() {
         return id;
     }
 
-    /**
-     * Gets the client who placed the order.
-     *
-     * @return the client
-     */
     public Client getClient() {
         return client;
     }
 
-    /**
-     * Gets the list of items in the order.
-     *
-     * @return an immutable copy of the items list
-     */
     public List<OrderItem> getItems() {
         return List.copyOf(items);
     }
@@ -85,11 +65,33 @@ public class Order {
     }
 
     /**
-     * Gets the total price of the order.
+     * Gets the total price of the order (after discounts).
      *
-     * @return the total price
+     * @return the total price after applying discounts
      */
     public double getTotalPrice() {
         return totalPrice;
+    }
+    
+    /**
+     * Calculates the original total price of all items before discounts.
+     *
+     * @return the original total price before discounts
+     */
+    public double getOriginalTotalPrice() {
+        return items.stream()
+                .mapToDouble(OrderItem::getOriginalTotalPrice)
+                .sum();
+    }
+    
+    /**
+     * Calculates the total discount amount applied to the order.
+     *
+     * @return the total discount amount
+     */
+    public double getTotalDiscountAmount() {
+        return items.stream()
+                .mapToDouble(OrderItem::getTotalDiscountAmount)
+                .sum();
     }
 }

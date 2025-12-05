@@ -18,9 +18,6 @@ public class Schedule {
 
     private final Map<LocalDate, List<GroupClass>> classesByDate;
 
-    /**
-     * Creates a new empty schedule.
-     */
     public Schedule() {
         this.classesByDate = new HashMap<>();
     }
@@ -51,12 +48,6 @@ public class Schedule {
         return true;
     }
 
-    /**
-     * Removes a class from the schedule.
-     *
-     * @param classToRemove the class to remove (must not be null)
-     * @throws IllegalArgumentException if classToRemove is null
-     */
     public void removeClass(GroupClass classToRemove) {
         ValidationUtils.requireNonNull(classToRemove, "Заняття не може бути null.");
         
@@ -66,26 +57,11 @@ public class Schedule {
         }
     }
 
-    /**
-     * Gets all classes scheduled for a specific date.
-     *
-     * @param date the date to query (must not be null)
-     * @return a list of classes for that date (empty list if none)
-     * @throws IllegalArgumentException if date is null
-     */
     public List<GroupClass> getClassesForDate(LocalDate date) {
         ValidationUtils.requireNonNull(date, "Дата не може бути null.");
         return classesByDate.getOrDefault(date, new ArrayList<>());
     }
 
-    /**
-     * Gets all classes scheduled for a specific date and studio.
-     *
-     * @param date the date to query (must not be null)
-     * @param studio the studio to filter by (must not be null)
-     * @return a list of classes matching the criteria (empty list if none)
-     * @throws IllegalArgumentException if date or studio is null
-     */
     public List<GroupClass> getClassesForDateAndStudio(LocalDate date, Studio studio) {
         ValidationUtils.requireNonNull(date, "Дата не може бути null.");
         ValidationUtils.requireNonNull(studio, "Студія не може бути null.");
@@ -93,5 +69,13 @@ public class Schedule {
         return getClassesForDate(date).stream()
                 .filter(c -> c.getStudio().getId().equals(studio.getId()))
                 .collect(Collectors.toList());
+    }
+
+    public List<GroupClass> getAllClasses() {
+        List<GroupClass> allClasses = new ArrayList<>();
+        for (List<GroupClass> classesOnDate : classesByDate.values()) {
+            allClasses.addAll(classesOnDate);
+        }
+        return allClasses;
     }
 }

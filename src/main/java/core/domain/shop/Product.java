@@ -12,6 +12,7 @@ public abstract class Product implements ProductOperation {
     protected final String id;
     protected String name;
     protected double price;
+    protected DiscountOperation discountStrategy;
 
     /**
      * Creates a new product with the specified name and price.
@@ -24,53 +25,50 @@ public abstract class Product implements ProductOperation {
         this.id = UUID.randomUUID().toString();
         this.name = ValidationUtils.requireNonBlank(name, "Назва продукту не може бути порожньою.");
         this.price = ValidationUtils.requireNonNegative(price, Constants.ERROR_PRODUCT_PRICE_NEGATIVE);
+        this.discountStrategy = DiscountStrategy.noDiscount();
     }
 
-    /**
-     * Gets detailed information about the product.
-     * Implementation is specific to each product type.
-     *
-     * @return a string containing product details
-     */
     public abstract String getDetails();
 
-    /**
-     * Gets the unique identifier of the product.
-     *
-     * @return the product ID
-     */
     @Override
     public String getId() {
         return id;
     }
 
-    /**
-     * Gets the name of the product.
-     *
-     * @return the name
-     */
     @Override
     public String getName() {
         return name;
     }
 
-    /**
-     * Gets the price of the product.
-     *
-     * @return the price
-     */
-    @Override
-    public double getPrice() {
+    public double getOriginalPrice() {
         return price;
     }
+    
+    @Override
+    public double getPrice() {
+        if (discountStrategy == null) {
+            return price;
+        }
+        return discountStrategy.applyDiscount(price);
+    }
+    
+    public double getDiscountAmount() {
+        if (discountStrategy == null) {
+            return 0.0;
+        }
+        return discountStrategy.getDiscountAmount(price);
+    }
+    
+    public void setDiscountStrategy(DiscountOperation discountStrategy) {
+        this.discountStrategy = discountStrategy != null 
+            ? discountStrategy 
+            : DiscountStrategy.noDiscount();
+    }
+    
+    public DiscountOperation getDiscountStrategy() {
+        return discountStrategy;
+    }
 
-    /**
-     * Compares this product with another object for equality.
-     * Products are considered equal if they have the same ID.
-     *
-     * @param o the object to compare with
-     * @return true if the objects are equal, false otherwise
-     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -79,11 +77,6 @@ public abstract class Product implements ProductOperation {
         return id.equals(product.id);
     }
 
-    /**
-     * Returns a hash code for this product.
-     *
-     * @return the hash code based on the product ID
-     */
     @Override
     public int hashCode() {
         return id.hashCode();

@@ -6,6 +6,9 @@ import core.domain.client.MembershipType;
 import core.domain.club.FitnessClub;
 import core.domain.club.FitnessNetwork;
 import core.domain.club.Studio;
+import core.domain.shop.DiscountStrategy;
+import core.domain.shop.Order;
+import core.domain.shop.OrderItem;
 import core.domain.shop.Product;
 import core.domain.shop.ProductFactory;
 import core.domain.staff.Administrator;
@@ -61,21 +64,10 @@ public class Main implements CommandLineRunner {
         this.bookingService = bookingService;
     }
     
-    /**
-     * Main entry point of the application.
-     *
-     * @param args command line arguments
-     */
     public static void main(String[] args) {
         SpringApplication.run(Main.class, args);
     }
     
-    /**
-     * Runs the demonstration of the fitness club management system.
-     * This method is called after the Spring context is initialized.
-     *
-     * @param args command line arguments
-     */
     @Override
     public void run(String... args) {
         System.out.println("=== Fitness Club Management System ===\n");
@@ -105,14 +97,12 @@ public class Main implements CommandLineRunner {
         // Step 5: Book class
         demonstrateClassBooking(club, client, trainer, yogaStudio);
         
+        // Step 6: Demonstrate discount strategies
+        demonstrateDiscountStrategies(club, admin);
+        
         System.out.println("\n=== Демонстрація завершена ===");
     }
     
-    /**
-     * Demonstrates network and club infrastructure setup.
-     *
-     * @return the created fitness club
-     */
     private FitnessClub demonstrateNetworkSetup() {
         System.out.println("--- 1. Створення інфраструктури мережі ---");
         
@@ -131,12 +121,6 @@ public class Main implements CommandLineRunner {
         return clubOnObolon;
     }
     
-    /**
-     * Demonstrates staff hiring process.
-     *
-     * @param club the fitness club to add staff to
-     * @return an array containing [trainer, administrator, cleaner]
-     */
     private Object[] demonstrateStaffHiring(FitnessClub club) {
         System.out.println("\n--- 2. Найм персоналу ---");
         
@@ -153,11 +137,6 @@ public class Main implements CommandLineRunner {
         return new Object[]{trainerAnna, adminPetro, cleanerMaria};
     }
     
-    /**
-     * Demonstrates inventory management with exception handling.
-     *
-     * @param club the fitness club
-     */
     private void demonstrateInventoryManagement(FitnessClub club) {
         System.out.println("\n--- 3. Наповнення складу товарів (з обробкою винятків) ---");
         
@@ -179,13 +158,6 @@ public class Main implements CommandLineRunner {
         }
     }
     
-    /**
-     * Demonstrates client registration and membership assignment.
-     *
-     * @param club the fitness club
-     * @param administrator the administrator approving the membership
-     * @return the registered client
-     */
     private Client demonstrateClientRegistration(FitnessClub club, Administrator administrator) {
         System.out.println("\n--- 4. Реєстрація клієнта та продаж абонемента ---");
         
@@ -209,14 +181,6 @@ public class Main implements CommandLineRunner {
         }
     }
     
-    /**
-     * Demonstrates class booking process with exception handling.
-     *
-     * @param club the fitness club
-     * @param client the client to book for
-     * @param trainer the trainer for the class
-     * @param studio the studio for the class
-     */
     private void demonstrateClassBooking(FitnessClub club, Client client, Trainer trainer, Studio studio) {
         System.out.println("\n--- 5. Імітація бізнес-процесу: Запис на заняття (з обробкою винятків) ---");
         
@@ -239,5 +203,79 @@ public class Main implements CommandLineRunner {
         } catch (BookingException e) {
             System.out.println("ПОМИЛКА БРОНЮВАННЯ: " + e.getMessage());
         }
+    }
+    
+    private void demonstrateDiscountStrategies(FitnessClub club, Administrator administrator) {
+        System.out.println("\n--- 6. Демонстрація системи знижок ---");
+        
+        // Demonstrate membership discount
+        System.out.println("\n6.1. Знижка на абонемент:");
+        MembershipType type = MembershipType.NETWORK_WIDE;
+        float originalCost = 1000.0f;
+        core.domain.shop.DiscountOperation membershipDiscount = DiscountStrategy.percentageDiscount(15);
+        
+        Membership discountedMembership = new Membership.Builder(type, LocalDate.now(), originalCost)
+                .withDurationInDays(60)
+                .withDiscount(membershipDiscount)
+                .build();
+        
+        System.out.println("Оригінальна вартість абонемента: " + originalCost + " грн");
+        System.out.println("Знижка: " + membershipDiscount.getDescription());
+        System.out.println("Сума знижки: " + discountedMembership.getDiscountAmount() + " грн");
+        System.out.println("Фінальна вартість: " + discountedMembership.getCost() + " грн");
+        
+        // Demonstrate product discount
+        System.out.println("\n6.2. Знижка на продукт:");
+        Product supplement = productFactory.createProduct("SUPPLEMENT", "Протеїн", 1200, "Ваніль");
+        core.domain.shop.DiscountOperation productDiscount = DiscountStrategy.percentageDiscount(20);
+        supplement.setDiscountStrategy(productDiscount);
+        
+        System.out.println("Продукт: " + supplement.getName());
+        System.out.println("Оригінальна ціна: " + supplement.getOriginalPrice() + " грн");
+        System.out.println("Знижка: " + productDiscount.getDescription());
+        System.out.println("Сума знижки: " + supplement.getDiscountAmount() + " грн");
+        System.out.println("Ціна зі знижкою: " + supplement.getPrice() + " грн");
+        
+        // Demonstrate fixed discount on clothes
+        System.out.println("\n6.3. Фіксована знижка на одяг:");
+        Product tshirt = productFactory.createProduct("CLOSE", "Футболка", 500, "M", "Чорна");
+        core.domain.shop.DiscountOperation fixedDiscount = DiscountStrategy.fixedDiscount(100);
+        tshirt.setDiscountStrategy(fixedDiscount);
+        
+        System.out.println("Продукт: " + tshirt.getName());
+        System.out.println("Оригінальна ціна: " + tshirt.getOriginalPrice() + " грн");
+        System.out.println("Знижка: " + fixedDiscount.getDescription());
+        System.out.println("Ціна зі знижкою: " + tshirt.getPrice() + " грн");
+        
+        // Demonstrate order with discounts
+        System.out.println("\n6.4. Замовлення зі знижками:");
+        Product protein = productFactory.createProduct("SUPPLEMENT", "Протеїн", 1200, "Шоколад");
+        Product mat = productFactory.createProduct("CLOSE", "Килимок для йоги", 800, "Standard", "Синій");
+
+        core.domain.shop.DiscountOperation proteinDiscount = DiscountStrategy.percentageDiscount(25);
+        core.domain.shop.DiscountOperation matDiscount = DiscountStrategy.percentageDiscount(10);
+        
+        protein.setDiscountStrategy(proteinDiscount);
+        mat.setDiscountStrategy(matDiscount);
+        
+        Client orderClient = new Client("Іван Петренко", "+380991111111");
+        List<OrderItem> orderItems = List.of(
+                new OrderItem(protein, 2),
+                new OrderItem(mat, 1)
+        );
+        
+        Order order = new Order(orderClient, orderItems);
+        
+        System.out.println("Замовлення містить:");
+        order.getItems().forEach(item -> {
+            System.out.println("  - " + item.product().getName() + 
+                             " x" + item.quantity() + 
+                             " | Оригінал: " + item.getOriginalTotalPrice() + 
+                             " грн | Зі знижкою: " + item.getTotalPrice() + " грн");
+        });
+        
+        System.out.println("Оригінальна сума замовлення: " + order.getOriginalTotalPrice() + " грн");
+        System.out.println("Загальна знижка: " + order.getTotalDiscountAmount() + " грн");
+        System.out.println("Фінальна сума: " + order.getTotalPrice() + " грн");
     }
 }
